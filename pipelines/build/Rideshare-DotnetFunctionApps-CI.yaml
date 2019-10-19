@@ -6,8 +6,9 @@ variables:
     !**/*Test*.csproj
   testProjects: '**/*Test*/*.csproj'
   buildConfiguration: 'Release'
-queue:
-  name: Hosted Linux Preview
+pool:
+    name: Azure Pipelines
+    vmimage: windows-latest
 steps:
   - task: DotNetCoreCLI@2
     displayName: Restore
