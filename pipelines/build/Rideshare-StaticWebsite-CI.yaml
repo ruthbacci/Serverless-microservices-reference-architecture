@@ -1,7 +1,7 @@
 resources:
   - repo: self
 queue:
-  name: Azure Pipelines
+  name: Hosted Linux Preview
   demands: npm
 
 steps:
