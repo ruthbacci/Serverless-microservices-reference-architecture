@@ -1,8 +1,9 @@
 resources:
 - repo: self
-queue:
-  name: Hosted Linux Preview
+pool:
+  name: Azure Pipelines
   demands: npm
+  vmimage: 'ubuntu-latest'
 
 steps:
 - task: Npm@1
