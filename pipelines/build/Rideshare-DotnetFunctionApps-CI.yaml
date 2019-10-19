@@ -8,7 +8,7 @@ variables:
   buildConfiguration: 'Release'
 pool:
     name: Azure Pipelines
-    vmimage: windows-latest
+    vmimage: ubuntu-latest
 steps:
   - task: DotNetCoreCLI@2
     displayName: Restore
