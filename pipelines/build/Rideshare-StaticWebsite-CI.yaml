@@ -1,7 +1,7 @@
 resources:
   - repo: self
 queue:
-  name: Hosted Agent
+  name: Azure Pipelines
   demands: npm
 
 steps:
