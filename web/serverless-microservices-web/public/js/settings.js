@@ -10,4 +10,5 @@ window.apiBaseUrl = 'https://rbrideshare.azure-api.net';
 window.apiDriversBaseUrl = `${window.apiBaseUrl}/d`;
 window.apiTripsBaseUrl = `${window.apiBaseUrl}/t`;
 window.apiPassengersBaseUrl = `${window.apiBaseUrl}/p`;
+window.apiOrchestratorsBaseUrl = 'https://rbrideshareorchestratorsfunctionapp.azurewebsites.net/api';
 window.signalrInfoUrl = 'https://rbidesharetripsfunctionapp.azurewebsites.net/api/signalrinfo';
