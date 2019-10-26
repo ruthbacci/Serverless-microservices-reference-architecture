@@ -15,6 +15,12 @@ namespace ServerlessMicroservices.FunctionApp.Orchestrators
     public static class TripManagerOrchestrator
     {
         [FunctionName("O_ManageTrip")]
+
+        //**Durable Function - 2 "Trip Manage Instance**  
+        //Rideshare uses a Sequencial Durable Function (waits the result of previous activities before calling the next)
+        //Once orchestrator has handed off to activity function it is able to scale to 0 (hence not long-running)
+        //Orchestrator and Activity functions write progress to Execution history (in this case SQL DB)
+        //When the Orchestrator wakes back up again, it starts here, but then checks execution history
         public static async Task<object> ManageTrip(
             [OrchestrationTrigger] DurableOrchestrationContext context,
             ILogger log)
@@ -28,7 +34,7 @@ namespace ServerlessMicroservices.FunctionApp.Orchestrators
 
             try
             {
-                // Find and notify drivers
+                // Acvitivty Function - Find and notify drivers
                 trip = await context.CallActivityAsync<TripItem>("A_TM_FindNNotifyDrivers", trip);
                 if (trip.AvailableDrivers.Count == 0)
                     throw new Exception("No drivers available!!");
@@ -59,22 +65,23 @@ namespace ServerlessMicroservices.FunctionApp.Orchestrators
                 if (acceptedDriver == null)
                     throw new Exception($"Data integrity - received an ack from an invalid driver {driverAcceptCode}!!");
 
-                // Assign trip driver
+                // Activity Function - Assign trip driver
                 trip = await context.CallActivityAsync<TripItem>("A_TM_AssignTripDriver",  new TripInfo
                 {
                     Trip = trip,
                     Driver = acceptedDriver
                 });
 
-                // Notify other drivers that their service is no longer needed
+                // Activity Function - Notify other drivers that their service is no longer needed
                 await context.CallActivityAsync("A_TM_NotifyOtherDrivers", trip);
 
-                // Notify the passenger that the trip is starting
+                // Activity Function - Notify the passenger that the trip is starting
                 await context.CallActivityAsync("A_TM_NotifyPassenger", trip);
 
-                // Trigger to create a trip monitor orchestrator whose job is to monitor the trip for completion
+                // Activity Function - Trigger to create a trip monitor orchestrator whose job is to monitor the trip for completion
                 await context.CallActivityAsync("A_TM_CreateTripMonitor", trip);
             }
+            //catch the error if there is an exception
             catch (Exception e)
             {
                 if (!context.IsReplaying)

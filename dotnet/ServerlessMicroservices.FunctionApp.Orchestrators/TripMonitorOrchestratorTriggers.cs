@@ -28,7 +28,11 @@ namespace ServerlessMicroservices.FunctionApp.Orchestrators
                 log.LogError(error);
             }
         }
-
+        //**Durable Function - 3 "Trip Monitor Orchestrator Trigger"**  
+        //Rideshare uses a Sequencial Durable Function (waits the result of previous activities before calling the next)
+        //Once orchestrator has handed off to activity function it is able to scale to 0 (hence not long-running)
+        //Orchestrator and Activity functions write progress to Execution history (in this case SQL DB)
+        //When the Orchestrator wakes back up again, it starts here, but then checks execution history
         [FunctionName("T_StartTripMonitor")]
         public static async Task<IActionResult> StartTripMonitor([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "tripmonitors/{code}")] HttpRequest req,
             [OrchestrationClient] DurableOrchestrationClient context,

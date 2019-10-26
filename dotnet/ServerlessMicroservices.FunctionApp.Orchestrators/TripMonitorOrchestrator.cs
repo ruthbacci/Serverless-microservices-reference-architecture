@@ -10,9 +10,19 @@ using System.Threading.Tasks;
 
 namespace ServerlessMicroservices.FunctionApp.Orchestrators
 {
+
+
+
     [StorageAccount("AzureWebJobsStorage")]
     public static class TripMonitorOrchestrator
     {
+        //**Durable Function - 4 "Monitor Trip Instance**  
+        //Rideshare uses a Sequencial Durable Function (waits the result of previous activities before calling the next)
+        //Once orchestrator has handed off to activity function it is able to scale to 0 (hence not long-running)
+        //Orchestrator and Activity functions write progress to Execution history (in this case SQL DB)
+        //When the Orchestrator wakes back up again, it starts here, but then checks execution history
+
+
         [FunctionName("O_MonitorTrip")]
         public static async Task<object> MonitorTrip(
             [OrchestrationTrigger] DurableOrchestrationContext context,

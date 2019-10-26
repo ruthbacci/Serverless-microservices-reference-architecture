@@ -16,6 +16,7 @@ namespace ServerlessMicroservices.Seeder
         static void Main(string[] args)
         {
             var app = new CommandLineApplication();
+
             app.FullName = "RideShare Seed & Test Commands";
             app.HelpOption("--help");
 
@@ -123,7 +124,7 @@ namespace ServerlessMicroservices.Seeder
         static async Task Seed(string driversUrl)
         {
             // Read existing entities
-            var drivers = await Utilities.Get<List<DriverItem>>(null, $"{driversUrl}/api/drivers", new Dictionary<string, string>());
+            var drivers = await Utilities.Get<List<DriverItem>>(null, $"{driversUrl}/d/drivers", new Dictionary<string, string>());
             //List<PassengerItem> passengers = await Utilities.Get<List<PassengerItem>>(null, $"{passengersUrl}/api/passengers", new Dictionary<string, string>());
 
             if (drivers == null || drivers.Count == 0)
@@ -140,7 +141,7 @@ namespace ServerlessMicroservices.Seeder
 
                 foreach (var driver in drivers)
                 {
-                    await Utilities.Post<dynamic, dynamic>(null, driver, $"{driversUrl}/api/drivers", new Dictionary<string, string>());
+                    await Utilities.Post<dynamic, dynamic>(null, driver, $"{driversUrl}/d/drivers", new Dictionary<string, string>());
                 }
             }
             else
